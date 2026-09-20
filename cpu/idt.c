@@ -1,6 +1,7 @@
 #include "idt.h"
 #include "gdt.h"
 #include "vga.h"
+#include "io.h"
 
 #define PANIC_ATTR 0x4F   /* white on red */
 
@@ -30,6 +31,9 @@ void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
 	idt[num].flags     = flags;
 }
 
+extern void isr0(void);
+extern void irq1(void);
+
 void idt_init(void)
 {
 	ip.limit = (uint16_t)(sizeof(struct idt_entry) * IDT_ENTRIES - 1);
@@ -40,6 +44,15 @@ void idt_init(void)
 		idt_set_gate((uint8_t)i, 0, 0, 0);
 
 	idt_set_gate(0, (uint32_t)isr0, GDT_KERNEL_CODE_SEL, IDT_FLAG_KERNEL_INT);
+	idt_set_gate(33, (uint32_t)irq1, GDT_KERNEL_CODE_SEL, IDT_FLAG_KERNEL_INT);
 
 	idt_load(&ip);
+
+	outb(0x20, 0x11); outb(0xA0, 0x11);
+    outb(0x21, 0x20); outb(0xA1, 0x28);
+    outb(0x21, 0x04); outb(0xA0, 0x02);
+    outb(0x21, 0x01); outb(0xA1, 0x01);
+    outb(0x21, 0xFD); outb(0xA1, 0xFF);
+
+	__asm__ volatile ("sti");
 }

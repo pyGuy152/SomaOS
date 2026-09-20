@@ -32,6 +32,17 @@ void vga_put(char c)
 		if (++row == VGA_HEIGHT) row = 0;
 		return;
 	}
+	if (c == '\b'){
+		if (col > 0){
+			col--;
+		}else if (row > 0){
+			row--;
+			col = VGA_WIDTH-1;
+		}
+		VGA_MEM[row * VGA_WIDTH + col] = (uint16_t)' ' | (uint16_t)color << 8;
+		return;
+	}
+
 	VGA_MEM[row * VGA_WIDTH + col] = (uint16_t)c | (uint16_t)color << 8;
 	if (++col == VGA_WIDTH) {
 		col = 0;

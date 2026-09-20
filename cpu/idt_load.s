@@ -43,6 +43,17 @@ isr0:
     ; iret restores EFLAGS, so no sti is needed.
     iret
 
+global irq1
+extern keyboard_handler
+
+irq1:
+    cli
+    pusha                 
+    call keyboard_handler 
+    popa                  
+    sti
+    iret                  
+
 ; Adding vectors:
 ;   1. Vectors 8, 10-14 and 17 have a CPU-pushed error code. Push a dummy 0 in
 ;      the others so every handler sees one layout.
