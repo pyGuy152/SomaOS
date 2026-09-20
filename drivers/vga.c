@@ -32,6 +32,10 @@ void vga_put(char c)
 		if (++row == VGA_HEIGHT) row = 0;
 		return;
 	}
+	if (c == '\t'){
+		vga_write("    ");
+		return;
+	}
 	if (c == '\b'){
 		if (col > 0){
 			col--;
