@@ -1,3 +1,5 @@
+build/
 *.o
+*.d
 *.bin
 watch.sh
