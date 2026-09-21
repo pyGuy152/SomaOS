@@ -7,8 +7,16 @@ static uint8_t buffer_index = 0;
 
 void shell_execute(){
     vga_put('\n');
-    vga_write(input_buffer);
-    vga_put('\n');
+    if (streq(input_buffer,"help")){
+        vga_set_color(vga_entry_color(VGA_COLOR_BLUE, VGA_COLOR_WHITE));
+        vga_write(" clear - clears the screen\n");
+    }else if (streq(input_buffer,"clear")){
+        vga_clear();
+    }else{
+        vga_set_color(vga_entry_color(VGA_COLOR_RED, VGA_COLOR_WHITE));
+        vga_write(" Error - Command Not Found. Try help for list of commands\n");
+    }
+    vga_set_color(vga_entry_color(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
     memset(input_buffer, 0, sizeof(input_buffer));
     buffer_index = 0;
 }
