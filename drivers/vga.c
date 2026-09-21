@@ -39,10 +39,8 @@ void vga_put(char c)
 	if (c == '\b'){
 		if (col > 0){
 			col--;
-		}else if (row > 0){
-			row--;
-			col = VGA_WIDTH-1;
 		}
+		
 		VGA_MEM[row * VGA_WIDTH + col] = (uint16_t)' ' | (uint16_t)color << 8;
 		return;
 	}

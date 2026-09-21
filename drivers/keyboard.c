@@ -1,5 +1,5 @@
-#include <stdint.h>
-#include <stdbool.h>
+#include "keyboard.h"
+#include "../shell/shell.h"
 #include "vga.h"
 #include "io.h"
 
@@ -50,7 +50,7 @@ void keyboard_handler(void){
             c = scancode_ascii_uppercase[scancode];
         }
         if (c != 0){
-            vga_put(c);
+            shell_handle_char(c);
         }
     }
     
