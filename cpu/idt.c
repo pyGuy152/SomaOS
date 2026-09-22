@@ -32,6 +32,7 @@ void idt_set_gate(uint8_t num, uint32_t base, uint16_t sel, uint8_t flags)
 }
 
 extern void isr0(void);
+extern void irq0(void);
 extern void irq1(void);
 
 void idt_init(void)
@@ -45,6 +46,7 @@ void idt_init(void)
 
 	idt_set_gate(0, (uint32_t)isr0, GDT_KERNEL_CODE_SEL, IDT_FLAG_KERNEL_INT);
 	idt_set_gate(33, (uint32_t)irq1, GDT_KERNEL_CODE_SEL, IDT_FLAG_KERNEL_INT);
+	idt_set_gate(32, (uint32_t)irq0, GDT_KERNEL_CODE_SEL, IDT_FLAG_KERNEL_INT);
 
 	idt_load(&ip);
 
@@ -52,7 +54,7 @@ void idt_init(void)
     outb(0x21, 0x20); outb(0xA1, 0x28);
     outb(0x21, 0x04); outb(0xA0, 0x02);
     outb(0x21, 0x01); outb(0xA1, 0x01);
-    outb(0x21, 0xFD); outb(0xA1, 0xFF);
+    outb(0x21, 0xFC); outb(0xA1, 0xFF);
 
 	__asm__ volatile ("sti");
 }

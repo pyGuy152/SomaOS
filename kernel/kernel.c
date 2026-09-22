@@ -1,6 +1,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "vga.h"
+#include "pit.h"
 
 void kernel_main(void)
 {
@@ -10,11 +11,14 @@ void kernel_main(void)
 	vga_write("Welcome to SomaOS.\n\n");
 
 	gdt_init();
-	vga_write("[ OK ] GDT loaded  (flat model, 5 entries)\n");
+	vga_write("GDT loaded\n");
 
 	idt_init();
-	vga_write("[ OK ] IDT loaded  (256 vectors, isr0 installed)\n");
+	vga_write("IDT loaded (isr0, irq0, irq1)\n");
 
+	pit_init(100);
+	vga_write("Initialized PIT\n");
+	
 	vga_write("\nKernel ready.\n");
 
 	for (;;)

@@ -43,6 +43,17 @@ isr0:
     ; iret restores EFLAGS, so no sti is needed.
     iret
 
+global irq0
+extern pit_handler
+
+irq0:
+    cli
+    pusha                 
+    call pit_handler 
+    popa                  
+    sti
+    iret
+
 global irq1
 extern keyboard_handler
 
