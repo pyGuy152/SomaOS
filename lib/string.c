@@ -1,5 +1,42 @@
 #include "string.h"
 
+
+String str_make(char *data){
+	String s;
+	s.data = data;
+	s.length = strlen(data);
+	return s;
+}
+int str_equals(String a, String b){
+	if (a.length != b.length){
+		return 0;
+	}
+
+	for (int i = 0; i < a.length; i++){
+		if (a.data[i] != b.data[i]){
+			return 0;
+		}
+	}
+	return 1;
+}
+String substring(String str, int start, int len){
+	String s;
+	
+	if (start > str.length){
+		s.data = '\0';
+		s.length = 0;
+		return s;
+	}
+	if (start + len > str.length){
+		len = str.length;
+	}
+
+	s.data = str.data + start;
+    s.length = len;
+	return s;
+}
+
+// The following is old fuctions without the String type
 size_t strlen(const char *s)
 {
 	size_t n = 0;
