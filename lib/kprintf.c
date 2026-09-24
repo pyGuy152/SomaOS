@@ -18,8 +18,12 @@ void kprintf(char* str, ...){
 
         switch (str[i]){
             case 's': {
-                char *string_input = va_arg(args, char *);
-                vga_write(string_input);
+                char *s = va_arg(args, char *);
+                vga_write(s);
+                break;
+            }case 'S': {
+                char *s = va_arg(args, String).data;
+                vga_write(s);
                 break;
             }case 'c': {
                 char c = (char)va_arg(args, int);
