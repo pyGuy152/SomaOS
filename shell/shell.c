@@ -1,5 +1,6 @@
 #include "shell.h"
 #include "string.h"
+#include "kprintf.h"
 #include "vga.h"
 #include "io.h"
 #include "pit.h"
@@ -24,23 +25,17 @@ void shell_execute(){
         int minutes = total_seconds%(60*60)/60;
         int hours = total_seconds/(60*60);
 
-        char out[12];
-
         vga_set_color(vga_entry_color(VGA_COLOR_BLUE, VGA_COLOR_WHITE));
         vga_write(" System Uptime:\n");
+        kprintf(" %dh:%dm:%ds\n", hours, minutes, seconds);
 
-        itoa(hours,out);
-        vga_put(' ');vga_write(out);vga_write(" h\n");
-        itoa(minutes,out);
-        vga_put(' ');vga_write(out);vga_write(" m\n");
-        itoa(seconds,out);
-        vga_put(' ');vga_write(out);vga_write(" s\n");
     }else if (streq(input_buffer,"reboot")){
         vga_set_color(vga_entry_color(VGA_COLOR_BLUE, VGA_COLOR_WHITE));
         vga_write(" Rebooting SomaOS...\n");
         memset(input_buffer, 0, sizeof(input_buffer));
         buffer_index = 0;
         outb(0x64, 0xFE);
+        
     }else{
         vga_set_color(vga_entry_color(VGA_COLOR_RED, VGA_COLOR_WHITE));
         vga_write(" Error - Command Not Found. Try help for list of commands\n");

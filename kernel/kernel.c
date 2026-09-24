@@ -2,6 +2,7 @@
 #include "idt.h"
 #include "vga.h"
 #include "pit.h"
+#include "kprintf.h"
 #include "string.h"
 
 void kernel_main(void)
@@ -18,11 +19,9 @@ void kernel_main(void)
 	vga_write("IDT loaded (isr0, irq0, irq1)\n");
 
 	pit_init(100);
-	
-	vga_write("Initialized PIT\n");
+	kprintf("Initialized PIT at target frequency of %d\n",100);
 
-	String ready_message = str_make("\nKernel ready.\n"); // checking if it works! 
-	vga_write(ready_message.data);
+	vga_write("\nKernel ready.\n");
 
 	for (;;)
 		__asm__ volatile ("hlt");
