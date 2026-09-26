@@ -25,7 +25,7 @@ void kernel_main(multiboot_info_t *mboot_info)
 	pmm_init(mboot_info);
 	kprintf("Initialized PMM\n Total memory: %dMB\n",pmm_get_total_frames()/256);
 
-	vga_write("\nKernel ready\n");
+	vga_write("\nKernel ready. Type \"help\" and press enter to see all commands\n");
 
 	for (;;)
 		__asm__ volatile ("hlt");
