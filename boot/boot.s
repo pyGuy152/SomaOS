@@ -29,8 +29,7 @@ _start:
     push dword 0
     popfd
 
-    ; EAX/EBX still hold the multiboot magic and info pointer. Push them here
-    ; when kernel_main needs the memory map.
+    push ebx
     call kernel_main
 
     cli

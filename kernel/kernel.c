@@ -4,8 +4,9 @@
 #include "pit.h"
 #include "kprintf.h"
 #include "string.h"
+#include "pmm.h"
 
-void kernel_main(void)
+void kernel_main(multiboot_info_t *mboot_info)
 {
 	vga_set_color(vga_entry_color(VGA_COLOR_BLACK, VGA_COLOR_WHITE));
 	vga_clear();
@@ -21,7 +22,10 @@ void kernel_main(void)
 	pit_init(100);
 	kprintf("Initialized PIT at target frequency of %d\n",100);
 
-	vga_write("\nKernel ready.\n");
+	pmm_init(mboot_info);
+	kprintf("Initialized PMM\n Total memory: %dMB\n",pmm_get_total_frames()/256);
+
+	vga_write("\nKernel ready\n");
 
 	for (;;)
 		__asm__ volatile ("hlt");
