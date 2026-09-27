@@ -4,7 +4,7 @@
 #define T 3 //tokens
 #define D 2 //dimensions
 
-void printf_matrix(int rows, int cols, float M[rows][cols]);
+void printf_matrix(size_t rows, size_t cols, float M[rows][cols]);
 
 int main(void) {
 
@@ -155,9 +155,9 @@ int main(void) {
     return 0;
 }
 
-void printf_matrix(int rows, int cols, float M[rows][cols]) {
-    for (size_t i = 0; i < (size_t)rows; i++) {
-        for (size_t j = 0; j < (size_t)cols; j++) {
+void printf_matrix(size_t rows, size_t cols, float M[rows][cols]) {
+    for (size_t i = 0; i < rows; i++) {
+        for (size_t j = 0; j < cols; j++) {
             printf("%f  ", M[i][j]);
         }
         printf("\n");
