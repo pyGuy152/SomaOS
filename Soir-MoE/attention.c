@@ -4,6 +4,8 @@
 #define T 3 //tokens
 #define D 2 //dimensions
 
+void printf_matrix(int rows, int cols, float M[rows][cols]);
+
 int main(void) {
 
     float X[T][D] = { //token representations
@@ -13,13 +15,13 @@ int main(void) {
     };
 
     float W_Q[2][2] = { //query weights
-        {1.0f, 2.0f},
-        {3.0f, 4.0f}
+        {0.1f, 0.0f},
+        {0.0f, 0.1f}
     };
 
     float W_K[2][2] = {
-        {2.0f, 1.0f},
-        {0.0f, 3.0f}
+        {0.1f, 0.0f},
+        {0.0f, 0.1f}
     };
 
     float W_V[2][2] = {
@@ -54,7 +56,7 @@ int main(void) {
             float sum = 0;
 
             for (size_t k = 0; k < sizeof(X[0]) / sizeof(X[0][0]); k++) {
-                float  value = X[i][k] * W_K[k][j];                       
+                float  value = X[i][k] * W_K[k][j];
                 sum += value;
             }
             K[i][j] = sum;
@@ -66,7 +68,7 @@ int main(void) {
             float sum = 0;
 
             for (size_t k = 0; k < sizeof(X[0]) / sizeof(X[0][0]); k++) {
-                float  value = X[i][k] * W_V[k][j];                       
+                float  value = X[i][k] * W_V[k][j];
                 sum += value;
             }
             V[i][j] = sum;
@@ -78,7 +80,7 @@ int main(void) {
             float sum = 0;
 
             for (size_t k = 0; k < sizeof(Q[0]) / sizeof(Q[0][0]); k++) {
-                float  value = Q[i][k] * K[j][k];                       
+                float  value = Q[i][k] * K[j][k];
                 sum += value;
             }
             S[i][j] = sum;
@@ -129,11 +131,35 @@ int main(void) {
             float sum = 0;
 
             for (size_t k = 0; k < sizeof(A[0]) / sizeof(A[0][0]); k++) {
-                float  value = A[i][k] * V[k][j];                       
+                float  value = A[i][k] * V[k][j];
                 sum += value;
             }
             O[i][j] = sum;
         }
     }
 
+    printf_matrix(
+        sizeof(A) / sizeof(A[0]),
+        sizeof(A[0]) / sizeof(A[0][0]),
+        A
+    );
+
+    printf("\n");
+
+    printf_matrix(
+        sizeof(O) / sizeof(O[0]),
+        sizeof(O[0]) / sizeof(O[0][0]),
+        O
+    );
+
+    return 0;
+}
+
+void printf_matrix(int rows, int cols, float M[rows][cols]) {
+    for (size_t i = 0; i < (size_t)rows; i++) {
+        for (size_t j = 0; j < (size_t)cols; j++) {
+            printf("%f  ", M[i][j]);
+        }
+        printf("\n");
+    }
 }
