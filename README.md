@@ -47,7 +47,7 @@ sudo apt install build-essential nasm qemu-system-x86 grub-pc-bin xorriso
 
 #### Building and Running
 ```bash
-git clone [https://github.com/pyGuy152/SomaOS.git](https://github.com/pyGuy152/SomaOS.git)
+git clone https://github.com/pyGuy152/SomaOS.git
 cd SomaOS
 
 make
