@@ -5,6 +5,7 @@
 #include "io.h"
 #include "pit.h"
 #include "pmm.h"
+#include "kheap.h"
 
 static char input_buffer[256];
 static uint8_t buffer_index = 0;
@@ -12,7 +13,7 @@ static uint8_t buffer_index = 0;
 // command functions
 void cmd_help(){
     vga_set_color(vga_entry_color(VGA_COLOR_BLUE, VGA_COLOR_WHITE));
-    vga_write(" info - information on this OS\n test memory - tests memory allocation\n uptime - total running time\n clear - clears the screen\n reboot - reboot Soma Os\n");
+    vga_write(" info - information on this OS\n test memory - tests memory allocation\n test heap - tests the kernal heap feature\n uptime - total running time\n clear - clears the screen\n reboot - reboot Soma Os\n");
 }
 
 void cmd_info(){
@@ -35,6 +36,46 @@ void cmd_test_memory(){
     if (used_frames-new_used_frames == 1){
         kprintf("\n Memory allocation works!\n");
     }
+}
+
+void cmd_test_heap(){
+    vga_set_color(vga_entry_color(VGA_COLOR_BLUE, VGA_COLOR_WHITE));
+    vga_write(" Testing Kernel Heap\n");
+
+    uint32_t init_heap_count = get_heap_block_count();
+    char* buf1 = (char*) kmalloc(64);
+    char* buf2 = (char*) kmalloc(128);
+
+    kprintf(" Allocated buf1 (64B)  at address: 0x%d\n", (uint32_t)buf1);
+    kprintf(" Allocated buf2 (128B) at address: 0x%d\n", (uint32_t)buf2);
+
+    uint32_t mid_heap_count = get_heap_block_count();
+    if ((!buf1 || !buf2) || init_heap_count==mid_heap_count) {
+        vga_set_color(vga_entry_color(VGA_COLOR_RED, VGA_COLOR_WHITE));
+        vga_write(" Error - Heap allocation failed\n");
+        return;
+    }
+
+    String a = str_make("Hello world. I like pizza");
+    String b = str_make("SomaOS Dynamic Allocation ooooh ahhhh");
+    memcpy(buf1, a.data, a.length);
+    memcpy(buf2, b.data, b.length);
+
+    kprintf(" buf1 contents: \"%s\"\n", buf1);
+    kprintf(" buf2 contents: \"%s\"\n", buf2);
+
+    kfree(buf1);
+    kfree(buf2);
+
+    uint32_t final_heap_count = get_heap_block_count();
+    if (init_heap_count==final_heap_count){
+        kprintf(" Freed heap blocks were merged\n");
+    }else{
+        vga_set_color(vga_entry_color(VGA_COLOR_RED, VGA_COLOR_WHITE));
+        kprintf(" Error - Merging of freed heaps failed\n");
+        return;
+    }
+    kprintf(" Kernel Heap works!!!!\n");
 }
 
 void cmd_uptime(){
@@ -68,6 +109,8 @@ void shell_execute(){
         cmd_clear();
     }else if (streq(input_buffer,"test memory")){
         cmd_test_memory();
+    }else if (streq(input_buffer,"test heap")){
+        cmd_test_heap();
     }else if (streq(input_buffer,"uptime")){
         cmd_uptime();
     }else if (streq(input_buffer,"reboot")){
