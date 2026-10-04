@@ -29,6 +29,11 @@ int main(void) {
         {2.0f, 1.0f}
     };
 
+    float W_O[2][2] = {
+        {0.5f, 0.1f},
+        {0.2f, 0.7f}
+    };
+
     float Q[3][2]; //query vectors
     float K[3][2]; //key vectors
     float V[3][2]; //value vectors; information each token gives via attention
@@ -36,7 +41,8 @@ int main(void) {
     float S_scaled[3][3]; //scaled attention scores; later masked S
     float A[3][3]; //matrix of attention weights
     float O[3][2]; //attention output/context vectors; weighted sum of the value vectors
-
+    float Y[3][2];
+    float R[2][2]; //X+Y; residual/skip connection
 
 
     for (size_t i = 0; i < sizeof(X) / sizeof(X[0]); i++) { //looks at rows of X
@@ -137,20 +143,39 @@ int main(void) {
             O[i][j] = sum;
         }
     }
+//
+//     printf_matrix(
+//         sizeof(A) / sizeof(A[0]),
+//         sizeof(A[0]) / sizeof(A[0][0]),
+//         A
+//     );
+//
+//     printf("\n");
+//
+//     printf_matrix(
+//         sizeof(O) / sizeof(O[0]),
+//         sizeof(O[0]) / sizeof(O[0][0]),
+//         O
+//     );
 
-    printf_matrix(
-        sizeof(A) / sizeof(A[0]),
-        sizeof(A[0]) / sizeof(A[0][0]),
-        A
-    );
+    for (size_t i = 0; i < sizeof(O) / sizeof(O[0]); i++) {
+        for (size_t j = 0; j < sizeof(W_O[0]) / sizeof(W_O[0][0]); j++) {
+            float sum = 0;
 
-    printf("\n");
+            for (size_t k = 0; k < sizeof(O[0]) / sizeof(O[0][0]); k++) {
+                float value = O[i][k] * W_O[k][j];
+                sum += value;
+            }
 
-    printf_matrix(
-        sizeof(O) / sizeof(O[0]),
-        sizeof(O[0]) / sizeof(O[0][0]),
-        O
-    );
+            Y[i][j] = sum;
+        }
+    }
+
+    for (size_t i = 0; i < sizeof(X) / sizeof(X[0]); i++) {
+        for (size_t j = 0; j < sizeof(X[0]) / sizeof(X[0][0]); j++) {
+            R[i][j] = X[i][j] + Y[i][j];
+        }
+    }
 
     return 0;
 }
@@ -163,3 +188,4 @@ void printf_matrix(size_t rows, size_t cols, float M[rows][cols]) {
         printf("\n");
     }
 }
+//
